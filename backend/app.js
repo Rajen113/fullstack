@@ -7,8 +7,6 @@ app.use(express.json());
 app.use(express.urlencoded({extended:true}))
 
 app.set("view engine","ejs")
-const users=[]
-console.log(users)
 const jokes = [
     { category: "general", joke: "Why don’t scientists trust atoms? Because they make up everything!" },
     { category: "general", joke: "I told my wife she was drawing her eyebrows too high. She looked surprised." },

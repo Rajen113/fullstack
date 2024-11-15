@@ -13,7 +13,6 @@ function Layout({children}) {
           <div className="space-x-6 text-lg">
             <Link to="/" className="hover:text-teal-200 transition-colors">Home</Link>
             <Link to="/about" className="hover:text-teal-200 transition-colors">About</Link>
-            <Link to="/shop" className="hover:text-teal-200 transition-colors">Shop</Link>
             <Link to="/login" className="hover:text-teal-200 transition-colors">Login</Link>
             <Link to="/signup" className="hover:text-teal-200 transition-colors">Sign Up</Link>
           </div>
