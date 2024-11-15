@@ -1,10 +1,14 @@
 const express=require("express")
 const cors = require('cors')
 const user=require("./model/user.model")
+const userRouter = require("./router/userRouter");
 const app=express()
 app.use(cors())
 app.use(express.json());
 app.use(express.urlencoded({extended:true}))
+app.use("/user", userRouter);
+
+
 
 app.set("view engine","ejs")
 const jokes = [
@@ -33,28 +37,8 @@ const jokes = [
 app.get("/",(req,res)=>{
     res.send("done done")
 })
-app.get("/register",(req,res)=>{
-    res.render("index")
-})
 
-app.get("/user",async(req,res)=>{
-    const users= await user.find()
-    console.log(users)
-    res.json(users)
-})
-app.post("/user", async (req,res)=>{
-    const {name,username,email,password}=req.body
-    const createUser=await user.create({
-        name:name,
-        username:username,
-        email:email,
-        password:password
-    })
-    console.log(createUser)
 
-    console.log(users)
-    res.send(createUser)
-})
 
 app.get("/api/jokes",(req,res)=>{
 
