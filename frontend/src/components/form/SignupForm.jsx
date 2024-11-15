@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 
 function SignupForm() {
@@ -9,27 +10,32 @@ function SignupForm() {
     password: "",
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [message, setMessage] = useState(""); // For user feedback
+  const navigate = useNavigate();
 
-  const handleForm = (event) => {
+  const handleInputChange = (e) => {
+    const { id, value } = e.target;
+    setData((prevData) => ({ ...prevData, [id]: value }));
+  };
+
+  const handleForm = async (event) => {
     event.preventDefault();
     setIsSubmitting(true);
+    setMessage(""); // Clear previous messages
 
-    axios.post("http://localhost:3000/user", data)
-      .then((response) => {
-        console.log("Data submitted successfully:", response.data);
-      })
-      .catch((error) => {
-        console.error("Something went wrong:", error);
-      })
-      .finally(() => {
-        setIsSubmitting(false);
-        setData({
-          name: "",
-          username: "",
-          email: "",
-          password: "",
-        });
-      });
+    try {
+      const response = await axios.post("http://localhost:3000/user/signup", data);
+      console.log("Data submitted successfully:", response.data);
+      setMessage("Signup successful! Redirecting to login...");
+      setTimeout(() => navigate("/login"), 2000); // Redirect after 2 seconds
+    } catch (error) {
+      console.error("Something went wrong:", error);
+      setMessage(
+        error.response?.data?.message || "An error occurred during signup."
+      );
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -40,74 +46,25 @@ function SignupForm() {
             Create a New Account
           </h2>
           <form onSubmit={handleForm}>
-            <div className="mb-4">
-              <label
-                className="block text-gray-700 text-sm font-semibold mb-2"
-                htmlFor="name"
-              >
-                Full Name
-              </label>
-              <input
-                type="text"
-                id="name"
-                placeholder="Enter full name"
-                value={data.name}
-                onChange={(e) => setData({ ...data, name: e.target.value })}
-                className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-400 focus:border-transparent transition duration-300 ease-in-out"
-                required
-              />
-            </div>
-            <div className="mb-4">
-              <label
-                className="block text-gray-700 text-sm font-semibold mb-2"
-                htmlFor="username"
-              >
-                Username
-              </label>
-              <input
-                type="text"
-                id="username"
-                placeholder="Enter username"
-                value={data.username}
-                onChange={(e) => setData({ ...data, username: e.target.value })}
-                className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-400 focus:border-transparent transition duration-300 ease-in-out"
-                required
-              />
-            </div>
-            <div className="mb-4">
-              <label
-                className="block text-gray-700 text-sm font-semibold mb-2"
-                htmlFor="email"
-              >
-                Email Address
-              </label>
-              <input
-                type="email"
-                id="email"
-                placeholder="Enter email"
-                value={data.email}
-                onChange={(e) => setData({ ...data, email: e.target.value })}
-                className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-400 focus:border-transparent transition duration-300 ease-in-out"
-                required
-              />
-            </div>
-            <div className="mb-6">
-              <label
-                className="block text-gray-700 text-sm font-semibold mb-2"
-                htmlFor="password"
-              >
-                Password
-              </label>
-              <input
-                type="password"
-                id="password"
-                placeholder="Enter password"
-                value={data.password}
-                onChange={(e) => setData({ ...data, password: e.target.value })}
-                className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-400 focus:border-transparent transition duration-300 ease-in-out"
-                required
-              />
-            </div>
+            {["name", "username", "email", "password"].map((field) => (
+              <div key={field} className="mb-4">
+                <label
+                  className="block text-gray-700 text-sm font-semibold mb-2"
+                  htmlFor={field}
+                >
+                  {field.charAt(0).toUpperCase() + field.slice(1)}
+                </label>
+                <input
+                  type={field === "password" ? "password" : "text"}
+                  id={field}
+                  placeholder={`Enter ${field}`}
+                  value={data[field]}
+                  onChange={handleInputChange}
+                  className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-400 focus:border-transparent transition duration-300 ease-in-out"
+                  required
+                />
+              </div>
+            ))}
             <button
               type="submit"
               disabled={isSubmitting}
@@ -120,11 +77,20 @@ function SignupForm() {
               {isSubmitting ? "Signing up..." : "Sign Up"}
             </button>
           </form>
+          {message && (
+            <p
+              className={`mt-4 text-center text-sm ${
+                message.includes("successful") ? "text-green-600" : "text-red-600"
+              }`}
+            >
+              {message}
+            </p>
+          )}
           <p className="mt-4 text-center text-gray-600 text-sm">
             Already have an account?{" "}
-            <a href="#" className="text-teal-500 hover:underline">
+            <Link to="/login" className="hover:text-teal-200 transition-colors">
               Log in
-            </a>
+            </Link>
           </p>
         </div>
       </div>

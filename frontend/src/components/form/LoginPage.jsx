@@ -1,19 +1,44 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import axios, { Axios } from "axios";
+import { Link } from "react-router-dom";
 
 function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [loginMassage, setLoginMassage] = useState("")
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleLogin = (e) => {
     e.preventDefault();
-    setIsSubmitting(true);
-    // Simulate async login (e.g., API call)
-    setTimeout(() => {
-      setIsSubmitting(false);
-      console.log("Logged in with:", email, password);
-    }, 2000);
+
+    axios.post("http://localhost:3000/user/login", { email: email, password: password })
+      .then((response) => {
+        console.log("Data submitted successfully:", response.data);
+      })
+      .catch((error) => {
+        console.error("Something went wrong:", error);
+      })
+    // setIsSubmitting(true);
+    // // Simulate async login (e.g., API call)
+    // setTimeout(() => {
+    //   setIsSubmitting(false);
+    //   console.log("Logged in with:", email, password);
+    // }, 2000);
   };
+
+  useEffect(() => {
+    const handleApi = async () => {
+      await axios.get("http://localhost:3000/user/login")
+        .then((response) => response.data)
+        .then((data) => setLoginMassage(data))
+        .catch((error) => console.log("something is wrong", error))
+    }
+
+    handleApi()
+
+  },)
+
+  console.log(loginMassage)
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-500 to-indigo-600 animate-fadeIn">
@@ -58,20 +83,19 @@ function LoginPage() {
             <button
               type="submit"
               disabled={isSubmitting}
-              className={`w-full py-2 rounded-md text-white font-semibold transition-all duration-300 ease-in-out ${
-                isSubmitting
+              className={`w-full py-2 rounded-md text-white font-semibold transition-all duration-300 ease-in-out ${isSubmitting
                   ? "bg-indigo-300 cursor-not-allowed"
                   : "bg-indigo-500 hover:bg-indigo-600 transform hover:scale-105"
-              }`}
+                }`}
             >
               {isSubmitting ? "Logging in..." : "Login"}
             </button>
           </form>
           <p className="mt-4 text-center text-gray-600 text-sm">
             Don't have an account?{" "}
-            <a href="#" className="text-indigo-500 hover:underline">
-              Sign up
-            </a>
+            <Link to="/signup" className="hover:text-blue-800 transition-colors text-blue-900">
+              sign up
+            </Link>
           </p>
         </div>
       </div>
