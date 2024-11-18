@@ -14,6 +14,7 @@ import LoginPage from './components/form/LoginPage.jsx';
 import Layout from './components/Layout/Layout.jsx';
 import AboutPage from './components/About/AboutPage.jsx';
 import HomePage from './components/home/HomePage.jsx';
+import BuyPage from './components/buyProduct/Buypage.jsx';
 import ContactPage from './components/ContactPage/ContactPage.jsx';
 import PrivacyPage from './components/privacy/PrivacyPage.jsx';
 import TermsPage from './components/Term/TermsPage.jsx';
@@ -34,6 +35,10 @@ const router = createBrowserRouter([
   {
     path: "signup",
     element:<Layout><SignupForm/></Layout>,
+  },
+  {
+    path: "buy",
+    element:<Layout><BuyPage/></Layout>,
   },
   {
     path: "contact",
