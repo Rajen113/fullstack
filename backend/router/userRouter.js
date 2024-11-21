@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const bcrypt = require("bcrypt");
+const bcrypt = require('bcryptjs');
 const user= require("../model/user.model") // Correctly create a router instance
 
 router.get("/register", (req, res) => {
